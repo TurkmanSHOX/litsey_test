@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 set -o errexit
 
+echo "Installing Python dependencies..."
+pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
-python manage.py collectstatic --no-input
-python manage.py migrate
-python manage.py load_courses
+
+echo "Running database migrations..."
+python manage.py migrate --noinput
+
+echo "Collecting static files..."
+python manage.py collectstatic --noinput --clear
+
+echo "Build completed successfully!"
+
