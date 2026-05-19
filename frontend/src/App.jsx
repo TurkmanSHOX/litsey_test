@@ -1,121 +1,136 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import CssBaseline from '@mui/material/CssBaseline';
+import { Box, Typography } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { useState } from 'react';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Components
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import CourseDetail from './pages/CourseDetail';
+import Dashboard from './pages/Dashboard';
+import Home from './pages/Home';
+import LessonPage from './pages/LessonPage';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
+import TestPage from './pages/TestPage';
+import AdminPanel from './pages/AdminPanel';
+
+// Context
+import { AuthProvider, useAuth } from './context/AuthContext';
+
+// Theme
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#2563eb',
+      dark: '#1d4ed8',
+      light: '#93c5fd',
+    },
+    secondary: {
+      main: '#d97706',
+    },
+    success: {
+      main: '#059669',
+    },
+    info: {
+      main: '#0891b2',
+    },
+    warning: {
+      main: '#d97706',
+    },
+    background: {
+      default: '#f4f7fb',
+      paper: '#ffffff',
+    },
+    text: {
+      primary: '#111827',
+      secondary: '#4b5563',
+    },
+    divider: '#d9e2ec',
+  },
+  typography: {
+    fontFamily: '"Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: { color: '#111827', fontWeight: 700 },
+    h2: { color: '#111827', fontWeight: 700 },
+    h3: { color: '#111827', fontWeight: 700 },
+    h4: { color: '#111827', fontWeight: 700 },
+    h5: { color: '#111827', fontWeight: 700 },
+    h6: { color: '#111827', fontWeight: 700 },
+  },
+  shape: {
+    borderRadius: 8,
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          border: '1px solid #d9e2ec',
+          boxShadow: '0 10px 24px rgba(15, 23, 42, 0.08)',
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          border: '1px solid #d9e2ec',
+          boxShadow: '0 10px 24px rgba(15, 23, 42, 0.08)',
+        },
+      },
+    },
+  },
+})
+
+function AppContent() {
+  const { user, loading } = useAuth()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Typography>Yuklanmoqda...</Typography>
+      </Box>
+    )
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <CssBaseline />
+      {user && <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        {user && <Navbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />}
+        <Routes>
+          <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
+          <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+          <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/courses" element={user ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/courses/:id" element={user ? <CourseDetail /> : <Navigate to="/login" />} />
+          <Route path="/lessons" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+          <Route path="/lessons/:id" element={user ? <LessonPage /> : <Navigate to="/login" />} />
+          <Route path="/tests" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+          <Route path="/tests/:id" element={user ? <TestPage /> : <Navigate to="/login" />} />
+          <Route path="/analytics" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+          <Route path="/admin" element={user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/dashboard" />} />
+          <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+        </Routes>
+      </Box>
+    </Box>
+  )
+}
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   )
 }
 

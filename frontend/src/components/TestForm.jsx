@@ -1,8 +1,4 @@
-import React, { useState } from 'react';
-
 const TestForm = ({ test }) => {
-  const [answers, setAnswers] = useState({});
-
   const handleSubmit = (e) => {
     e.preventDefault();
     // Submit answers

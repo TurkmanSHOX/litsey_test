@@ -1,5 +1,3 @@
-import React from 'react';
-
 const LessonPlayer = ({ lesson }) => {
   return (
     <div className="lesson-player">
