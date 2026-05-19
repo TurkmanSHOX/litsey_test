@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import API from '../services/api'
+import { MEDIA_BASE_URL } from '../services/api'
 import {
   Container,
   Grid,
@@ -272,7 +273,7 @@ const Dashboard = () => {
               {course.image && (
                 <Box
                   component="img"
-                  src={course.image.startsWith('http') ? course.image : `http://127.0.0.1:8000${course.image}`}
+                  src={course.image.startsWith('http') ? course.image : `${MEDIA_BASE_URL}${course.image}`}
                   alt={course.title}
                   sx={{ width: '100%', height: 150, objectFit: 'cover' }}
                 />

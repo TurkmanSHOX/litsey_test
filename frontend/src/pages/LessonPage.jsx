@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import API from '../services/api'
+import { MEDIA_BASE_URL } from '../services/api'
 import {
   Container,
   Typography,
@@ -121,7 +122,7 @@ const LessonPage = () => {
   const currentContent = content[currentContentIndex]
   const mediaUrl = (path) => {
     if (!path) return ''
-    return path.startsWith('http') ? path : `http://127.0.0.1:8000${path}`
+    return path.startsWith('http') ? path : `${MEDIA_BASE_URL}${path}`
   }
 
   return (
